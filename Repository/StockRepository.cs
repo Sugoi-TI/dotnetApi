@@ -7,6 +7,7 @@ using dotnetApi.Dtos.Stock;
 using dotnetApi.Interfaces;
 using dotnetApi.Mappers;
 using dotnetApi.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApi.Repository
@@ -67,6 +68,11 @@ namespace dotnetApi.Repository
             await _context.SaveChangesAsync();
 
             return stockModel;
+        }
+
+        public Task<bool> StockExists(int id)
+        {
+            return _context.Stocks.AnyAsync(s => s.Id == id);
         }
     }
 }

@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotnetApi.Data;
+using dotnetApi.Dtos.Comment;
 using dotnetApi.Interfaces;
 using dotnetApi.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace dotnetApi.Repository
@@ -16,6 +18,14 @@ namespace dotnetApi.Repository
         {
             _context = context;
         }
+
+        public async Task<Comment> CreateAsync(Comment commentModel)
+        {
+            await _context.Comments.AddAsync(commentModel);
+            await _context.SaveChangesAsync();
+            return commentModel;
+        }
+
         public async Task<List<Comment>> GetAllAsync()
         {
             return await _context.Comments.ToListAsync();
@@ -25,5 +35,6 @@ namespace dotnetApi.Repository
         {
             return await _context.Comments.FindAsync(id);
         }
+
     }
 }
