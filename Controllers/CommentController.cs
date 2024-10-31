@@ -57,7 +57,19 @@ namespace dotnetApi.Controllers
             await _commentRepository.CreateAsync(commentModel);
 
             return CreatedAtAction(nameof(GetById), new { id = commentModel }, commentModel.ToCommentDto());
+        }
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentDto comment)
+        {
+            var updatedComment = await _commentRepository.UpdateAsync(id, comment.ToCommentFromUpdate());
 
+            if (updatedComment == null)
+            {
+                return NotFound($"Comment with id - {id} does not exist");
+            }
+
+            return Ok(comment);
         }
     }
 }
