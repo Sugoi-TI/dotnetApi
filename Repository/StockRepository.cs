@@ -47,6 +47,7 @@ namespace dotnetApi.Repository
 
             _context.Stocks.Remove(stockModel);
             await _context.SaveChangesAsync();
+
             return stockModel;
         }
         public async Task<Stock?> UpdateAsync(int id, UpdateStockDto updateStockDto)
