@@ -12,6 +12,6 @@ namespace dotnetApi.Interfaces
         Task<Comment?> GetByIdAsync(int id);
         Task<Comment> CreateAsync(Comment commentModel);
         Task<Comment?> UpdateAsync(int id, Comment commentModel);
-        Task<bool> Delete(int id);
+        Task<Comment?> DeleteAsync(int id);
     }
 }
