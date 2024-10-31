@@ -7,6 +7,7 @@ using dotnetApi.Interfaces;
 using dotnetApi.Mappers;
 using dotnetApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace dotnetApi.Controllers
 {
@@ -24,6 +25,9 @@ namespace dotnetApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var comments = await _commentRepository.GetAllAsync();
 
             var commentsDto = comments.Select(comment => comment.ToCommentDto());
@@ -31,9 +35,12 @@ namespace dotnetApi.Controllers
             return Ok(commentsDto);
         }
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var comment = await _commentRepository.GetByIdAsync(id);
 
             if (comment == null)
@@ -43,9 +50,12 @@ namespace dotnetApi.Controllers
 
             return Ok(comment.ToCommentDto());
         }
-        [HttpPost("{stockId}")]
+        [HttpPost("{stockId:int}")]
         public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentDto comment)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var stockExists = await _stockRepository.StockExists(stockId);
 
             if (!stockExists)
@@ -59,9 +69,12 @@ namespace dotnetApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = commentModel }, commentModel.ToCommentDto());
         }
         [HttpPut]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentDto comment)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var updatedComment = await _commentRepository.UpdateAsync(id, comment.ToCommentFromUpdate());
 
             if (updatedComment == null)
@@ -72,9 +85,12 @@ namespace dotnetApi.Controllers
             return Ok(comment);
         }
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var comment = await _commentRepository.DeleteAsync(id);
 
             if (comment == null)

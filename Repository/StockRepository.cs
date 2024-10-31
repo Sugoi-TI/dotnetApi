@@ -64,7 +64,7 @@ namespace dotnetApi.Repository
             stockModel.Purchase = updateStockDto.Purchase;
             stockModel.LastDiv = updateStockDto.LastDiv;
             stockModel.Industry = updateStockDto.Industry;
-            stockModel.marketCap = updateStockDto.marketCap;
+            stockModel.MarketCap = updateStockDto.MarketCap;
 
             await _context.SaveChangesAsync();
 
