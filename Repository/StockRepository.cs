@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dotnetApi.Data;
 using dotnetApi.Dtos.Stock;
+using dotnetApi.Helpers;
 using dotnetApi.Interfaces;
 using dotnetApi.Mappers;
 using dotnetApi.Models;
@@ -19,9 +20,17 @@ namespace dotnetApi.Repository
         {
             _context = context;
         }
-        public async Task<List<Stock>> GetAllAsync()
+        public async Task<List<Stock>> GetAllAsync(QueryObject query)
         {
-            return await _context.Stocks.Include(s => s.Comments).ToListAsync();
+            var stocks = _context.Stocks.Include(s => s.Comments).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.CompanyName))
+                stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
+
+            if (!string.IsNullOrWhiteSpace(query.Symbol))
+                stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
+
+            return await stocks.ToListAsync();
         }
         public async Task<Stock?> GetByIdAsync(int id)
         {
