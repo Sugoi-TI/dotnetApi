@@ -16,5 +16,7 @@ namespace dotnetApi.Models
         public int? StockId { get; set; }
         // Navigation prop
         public Stock? Stock { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
     }
 }

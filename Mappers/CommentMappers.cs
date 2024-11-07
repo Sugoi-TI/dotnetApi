@@ -17,7 +17,8 @@ namespace dotnetApi.Mappers
                 Title = commentModel.Title,
                 Content = commentModel.Content,
                 CreateOn = commentModel.CreateOn,
-                StockId = commentModel.StockId
+                StockId = commentModel.StockId,
+                CreatedBy = commentModel.User.UserName
             };
         }
         public static Comment ToCommentFromCreate(this CreateCommentDto comment, int stockId)
