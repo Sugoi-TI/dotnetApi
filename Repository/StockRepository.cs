@@ -48,6 +48,12 @@ namespace dotnetApi.Repository
 
             return stock;
         }
+        public async Task<Stock?> GetBySymbolAsync(string symbol)
+        {
+            var stock = await _context.Stocks.FirstOrDefaultAsync(s => s.Symbol == symbol);
+
+            return stock;
+        }
         public async Task<Stock> CreateAsync(Stock stockModel)
         {
             await _context.Stocks.AddAsync(stockModel);

@@ -37,5 +37,32 @@ namespace dotnetApi.Controllers
             var userPortfolio = await _portfolioRepository.GetUserPortfolio(user);
             return Ok(userPortfolio);
         }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateUserPortfolio([FromBody] string symbol)
+        {
+            var username = User.GetUsername();
+            var user = await _userManager.FindByEmailAsync(username);
+            var stock = await _stockRepository.GetBySymbolAsync(symbol);
+            if (stock == null)
+                return BadRequest("Stock not found");
+
+            var userPortfolio = await _portfolioRepository.GetUserPortfolio(user);
+            if (userPortfolio.Any(s => s.Symbol.ToLower() == symbol.ToLower()))
+                return BadRequest("Already exist in portfolio");
+
+            var portfolioModel = new Portfolio
+            {
+                StockId = stock.Id,
+                UserId = user.Id,
+            };
+
+            await _portfolioRepository.CreateAsync(portfolioModel);
+
+            if (portfolioModel == null)
+                return StatusCode(500, "Could not create");
+
+            return Created();
+        }
     }
 }
