@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using dotnetApi.Dtos.Portfolio;
 using dotnetApi.Extensions;
 using dotnetApi.Interfaces;
 using dotnetApi.Models;
@@ -31,24 +33,28 @@ namespace dotnetApi.Controllers
         {
             var username = User.GetUsername();
             var user = await _userManager.FindByNameAsync(username);
+            Console.WriteLine(JsonSerializer.Serialize(user, new JsonSerializerOptions { WriteIndented = true }));
+
             if (user == null)
                 return BadRequest();
 
             var userPortfolio = await _portfolioRepository.GetUserPortfolio(user);
+
+            Console.WriteLine(JsonSerializer.Serialize(userPortfolio, new JsonSerializerOptions { WriteIndented = true }));
             return Ok(userPortfolio);
         }
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateUserPortfolio([FromBody] string symbol)
+        public async Task<IActionResult> CreateUserPortfolio([FromBody] CreatePortfolioDto createPortfolioDto)
         {
             var username = User.GetUsername();
-            var user = await _userManager.FindByEmailAsync(username);
-            var stock = await _stockRepository.GetBySymbolAsync(symbol);
+            var user = await _userManager.FindByNameAsync(username);
+            var stock = await _stockRepository.GetBySymbolAsync(createPortfolioDto.Symbol);
             if (stock == null)
                 return BadRequest("Stock not found");
 
             var userPortfolio = await _portfolioRepository.GetUserPortfolio(user);
-            if (userPortfolio.Any(s => s.Symbol.ToLower() == symbol.ToLower()))
+            if (userPortfolio.Any(s => s.Symbol.ToLower() == createPortfolioDto.Symbol.ToLower()))
                 return BadRequest("Already exist in portfolio");
 
             var portfolioModel = new Portfolio
@@ -63,6 +69,19 @@ namespace dotnetApi.Controllers
                 return StatusCode(500, "Could not create");
 
             return Created();
+        }
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete([FromBody] DeletePortfolioDto deletePortfolioDto)
+        {
+            var username = User.GetUsername();
+            var user = await _userManager.FindByNameAsync(username);
+            var portfolio = await _portfolioRepository.Delete(user, deletePortfolioDto.Symbol);
+
+            if (portfolio == null)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }

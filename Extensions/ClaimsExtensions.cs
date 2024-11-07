@@ -10,7 +10,11 @@ namespace dotnetApi.Extensions
     {
         public static string GetUsername(this ClaimsPrincipal user)
         {
-            return user.Claims.SingleOrDefault(x => x.Type.Equals("http://schemas.xmlsoap.org/ws/2005/05/indentity/claims/givenname")).Value;
+            var claim = user.Claims.SingleOrDefault(x => x.Type.Equals(ClaimTypes.GivenName));
+            if (claim == null)
+                throw new ArgumentNullException(nameof(claim), "Claim can't be null");
+
+            return claim.Value;
         }
     }
 }

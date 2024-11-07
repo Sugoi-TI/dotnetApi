@@ -10,5 +10,6 @@ namespace dotnetApi.Interfaces
     {
         Task<List<Stock>> GetUserPortfolio(User user);
         Task<Portfolio> CreateAsync(Portfolio portfolio);
+        Task<Portfolio?> Delete(User user, string symbol);
     }
 }

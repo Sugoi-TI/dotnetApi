@@ -29,15 +29,24 @@ namespace dotnetApi.Repository
                 LastDiv = p.Stock.LastDiv,
                 Industry = p.Stock.Industry,
                 MarketCap = p.Stock.MarketCap,
-
             })
             .ToListAsync();
         }
-
         public async Task<Portfolio> CreateAsync(Portfolio portfolio)
         {
             await _context.Portfolios.AddAsync(portfolio);
             await _context.SaveChangesAsync();
+            return portfolio;
+        }
+        public async Task<Portfolio?> Delete(User user, string symbol)
+        {
+            var portfolio = await _context.Portfolios.FirstOrDefaultAsync(p => p.UserId == user.Id && p.Stock.Symbol == symbol);
+            if (portfolio == null)
+                return null;
+
+            _context.Portfolios.Remove(portfolio);
+            await _context.SaveChangesAsync();
+
             return portfolio;
         }
     }
