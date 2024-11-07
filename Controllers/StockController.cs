@@ -15,6 +15,7 @@ namespace dotnetApi.Controllers
 {
     [Route("api/stock")]
     [ApiController]
+    [Authorize]
     public class StockController : ControllerBase
     {
         private readonly IStockRepository _stockRepository;

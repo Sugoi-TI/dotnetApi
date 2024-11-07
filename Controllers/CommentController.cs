@@ -7,6 +7,7 @@ using dotnetApi.Extensions;
 using dotnetApi.Interfaces;
 using dotnetApi.Mappers;
 using dotnetApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -15,6 +16,7 @@ namespace dotnetApi.Controllers
 {
     [Route("api/comment")]
     [ApiController]
+    [Authorize]
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _commentRepository;
